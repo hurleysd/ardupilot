@@ -1,5 +1,7 @@
 #!/bin/bash
 
+THIS_SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
 xhost +local:docker # forward X11
 docker run \
    --network host \
@@ -7,7 +9,7 @@ docker run \
    -u "$(id -u):$(id -g)" \
    -e DISPLAY=$DISPLAY \
    -v /tmp/.X11-unix:/tmp/.X11-unix \
-   -v "$(pwd):/ardupilot" \
+   -v "$THIS_SCRIPT_DIR:/ardupilot" \
    -it \
    --rm \
    ardupilot:latest \
