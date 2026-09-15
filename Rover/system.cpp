@@ -286,6 +286,16 @@ bool Rover::set_mode(Mode &new_mode, ModeReason reason)
     gcs().send_message(MSG_HEARTBEAT);
 
     notify_mode(control_mode);
+
+    // Sean TILT task - custom log message on successful control mode change
+    char tilt_log_msg[65]; // AP_Logger::Write_MessageF() has 65 char limit with null-terminator - log_MSG struct (LogStructure.h) has 64 char limit
+    hal.util->snprintf(tilt_log_msg, sizeof(tilt_log_msg),
+        "Rover control mode changed from %s to %s",
+        old_mode.name4(), control_mode->name4());
+
+    logger.Write_Message(tilt_log_msg);
+    gcs().send_text(MAV_SEVERITY_DEBUG, "%s", tilt_log_msg); // also output to GCS
+
     return true;
 }
 
